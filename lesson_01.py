@@ -46,6 +46,7 @@ print("% of men who survived", rate_men)
 
 
 #code 05
+#omg omz
 from sklearn.ensemble import RandomForestClassifier
 
 y = train_data["Survived"]
