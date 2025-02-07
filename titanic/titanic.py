@@ -44,4 +44,4 @@ y_pred_submission = model.predict(df_test)
 
 # 結果の保存
 output = pd.DataFrame({"PassengerId": df_test["PassengerId"], "Survived": y_pred_submission})
-output.to_csv('submission.csv', index=False)
+output.to_csv('submission.csv', index=False) 
