@@ -161,7 +161,6 @@ plt.savefig(save_path)
 
 
 # confusion matrix
-import seaborn as sns
 # Predict the values from the validation dataset
 Y_pred = model.predict(X_val)
 # Convert predictions classes to one hot vectors 
