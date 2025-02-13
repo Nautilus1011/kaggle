@@ -101,8 +101,8 @@ model.compile(optimizer=optimizer, loss="categorical_crossentropy",
 # metrics まだ理解できていない
 
 
-epochs = 10
-batch_size = 250
+epochs = 100
+batch_size = 32
 
 # データ拡張
 datagen = ImageDataGenerator(
@@ -126,20 +126,17 @@ history = model.fit_generator(datagen.flow(X_train,Y_train, batch_size=batch_siz
 
 
 
-# confusion matrix
-# Predict the values from the validation dataset
-Y_pred = model.predict(test)
-# Convert predictions classes to one hot vectors 
-Y_pred_classes = np.argmax(Y_pred,axis = 1) 
-# Convert validation observations to one hot vectors
-Y_true = np.argmax(Y_val,axis = 1) 
-# compute the confusion matrix
-confusion_mtx = confusion_matrix(Y_true, Y_pred_classes) 
-# plot the confusion matrix
-f,ax = plt.subplots(figsize=(8, 8))
-sns.heatmap(confusion_mtx, annot=True, linewidths=0.01,cmap="Greens",linecolor="gray", fmt= '.1f',ax=ax)
-plt.xlabel("Predicted Label")
-plt.ylabel("True Label")
-plt.title("Confusion Matrix")
-save_path = os.path.join(output_path, "Confusion_Matrix_test")
-plt.savefig(save_path)
+
+
+# テストデータに対して予測（クラス確率の取得）
+Y_pred_prob = model.predict(test)
+
+# 最も確率が高いクラスを取得（ラベルに変換）
+Y_pred = np.argmax(Y_pred_prob, axis=1)
+
+# 結果を DataFrame に変換
+output = pd.DataFrame({"ImageId": np.arange(1, len(Y_pred) + 1), "Label": Y_pred})
+
+# CSVファイルとして保存
+output.to_csv("submission.csv", index=False)
+
