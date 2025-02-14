@@ -179,7 +179,7 @@ labels = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat', 'Sandal', 'Shir
 cm = confusion_matrix(Y_true, Y_pred_classes)
 
 # コンフュージョンマトリクスをプロット
-plt.figure()
+plt.figure(figsize=(10,8))
 sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=labels, yticklabels=labels)
 plt.xlabel('Predicted Label')
 plt.ylabel('True Label')
