@@ -159,26 +159,16 @@ plt.savefig(save_path)
 
 # Precision, Recall, F1-score 計算
 report = classification_report(Y_true, Y_pred_classes, output_dict=True)
-precision = [report[str(i)]['precision'] for i in range(len(report) - 3)]
-recall = [report[str(i)]['recall'] for i in range(len(report) - 3)]
-f1_score = [report[str(i)]['f1-score'] for i in range(len(report) - 3)]
-labels = list(range(len(precision)))
 
-# Precision, Recall, F1-score の可視化
-plt.figure(figsize=(10, 5))
-plt.bar(labels, precision, color='blue', alpha=0.6, label="Precision")
-plt.bar(labels, recall, color='red', alpha=0.6, label="Recall", bottom=precision)
-plt.bar(labels, f1_score, color='green', alpha=0.6, label="F1 Score", bottom=np.array(precision) + np.array(recall))
-plt.xlabel("Class Labels")
-plt.ylabel("Score")
-plt.title("Precision, Recall, and F1-Score")
-plt.xticks(labels)
-plt.legend()
+# クラスごとの評価値を取得
+for i in range(len(report) - 3):  # 'accuracy', 'macro avg', 'weighted avg' を除外
+    precision = report[str(i)]['precision']
+    recall = report[str(i)]['recall']
+    f1_score = report[str(i)]['f1-score']
+    
+    print(f"Class {i}: Precision={precision:.4f}, Recall={recall:.4f}, F1-Score={f1_score:.4f}")
 
-# 画像保存
-save_path = os.path.join(output_path, "Precision_Recall_F1.png")
-plt.savefig(save_path)
-plt.close()
+
 
 
 
