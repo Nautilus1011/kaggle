@@ -24,7 +24,7 @@ import itertools
 # model's hyperparameters
 batch_size = 32
 num_classes = 10
-epochs = 25
+epochs = 50
 data_augmentation = False
 
 output_path = "/home/jinysd/workspace/repo/kaggle/cifar10/output"
@@ -196,29 +196,52 @@ else:
 
 
 
-def plotmodelhistory(history): 
-    fig, axs = plt.subplots(1,2,figsize=(15,5)) 
-    # summarize history for accuracy
-    axs[0].plot(history.history['accuracy']) 
-    axs[0].plot(history.history['val_accuracy']) 
-    axs[0].set_title('Model Accuracy')
-    axs[0].set_ylabel('Accuracy')
-    axs[0].set_xlabel('Epoch')
-    axs[0].legend(['train', 'validate'], loc='upper left')
-    # summarize history for loss
-    axs[1].plot(history.history['loss']) 
-    axs[1].plot(history.history['val_loss']) 
-    axs[1].set_title('Model Loss')
-    axs[1].set_ylabel('Loss') 
-    axs[1].set_xlabel('Epoch')
-    axs[1].legend(['train', 'validate'], loc='upper left')
-    save_path = os.path.join(output_path, "Epoch_and_accuracy_loss")
-    plt.savefig(save_path)
 
-# list all data in history
-print(history.history.keys())
+plt.figure()
+plt.plot(history.history["accuracy"])
+plt.plot(history.history["val_accuracy"])
+plt.xlabel("Epoch")
+plt.ylabel("Accuracy")
+plt.title("Model Accuracy")
+save_path = os.path.join(output_path, "Model_Accuracy")
+plt.savefig(save_path)
 
-plotmodelhistory(history)
+
+
+plt.figure()
+plt.plot(history.history["accuracy"])
+plt.plot(history.history["val_accuracy"])
+plt.xlabel("Epoch")
+plt.ylabel("Loss")
+plt.title("Model Loss")
+save_path = os.path.join(output_path, "Model_Loss")
+plt.savefig(save_path)
+
+
+
+# def plotmodelhistory(history): 
+#     fig, axs = plt.subplots(1,2,figsize=(15,5)) 
+#     # summarize history for accuracy
+#     axs[0].plot(history.history['accuracy']) 
+#     axs[0].plot(history.history['val_accuracy']) 
+#     axs[0].set_title('Model Accuracy')
+#     axs[0].set_ylabel('Accuracy')
+#     axs[0].set_xlabel('Epoch')
+#     axs[0].legend(['train', 'validate'], loc='upper left')
+#     # summarize history for loss
+#     axs[1].plot(history.history['loss']) 
+#     axs[1].plot(history.history['val_loss']) 
+#     axs[1].set_title('Model Loss')
+#     axs[1].set_ylabel('Loss') 
+#     axs[1].set_xlabel('Epoch')
+#     axs[1].legend(['train', 'validate'], loc='upper left')
+#     save_path = os.path.join(output_path, "Epoch_and_accuracy_loss")
+#     plt.savefig(save_path)
+
+# # list all data in history
+# print(history.history.keys())
+
+# plotmodelhistory(history)
 
 
 
@@ -249,7 +272,7 @@ sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=labels, yticklabe
 plt.xlabel('Predicted Label')
 plt.ylabel('True Label')
 plt.title('Confusion Matrix')
-save_path = os.path.join(output_path, "Confusion_Matrix04")
+save_path = os.path.join(output_path, "Confusion_Matrix")
 plt.savefig(save_path)
 
 
