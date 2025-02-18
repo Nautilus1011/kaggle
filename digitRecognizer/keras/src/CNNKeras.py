@@ -3,7 +3,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-from sklearn.metrics import confusion_matrix
+from sklearn.metrics import confusion_matrix, classification_report
 from sklearn.model_selection import train_test_split
 import itertools
 
@@ -16,7 +16,7 @@ from keras.callbacks import ReduceLROnPlateau
 
 import os
 
-data_path = "/home/jinysd/workspace/repo/kaggle/digitRecognizer/data"
+data_path = "/home/jinysd/workspace/datasetFolder/digit"
 output_path = "/home/jinysd/workspace/repo/kaggle/digitRecognizer/keras/output"
 
 # read train and test
@@ -101,7 +101,7 @@ model.compile(optimizer=optimizer, loss="categorical_crossentropy",
 # metrics まだ理解できていない
 
 
-epochs = 100
+epochs = 10
 batch_size = 32
 
 # データ拡張
@@ -126,17 +126,91 @@ history = model.fit_generator(datagen.flow(X_train,Y_train, batch_size=batch_siz
 
 
 
+# Plot the loss and accuracy curves for training and validation
+plt.figure()
+plt.plot(history.history['val_loss'], color='b', label="validation loss")
+plt.title("Test Loss")
+plt.xlabel("Number of Epochs")
+plt.ylabel("Loss")
+plt.legend()
+save_path = os.path.join(output_path, "Test_Loss")
+plt.savefig(save_path)
 
 
-# テストデータに対して予測（クラス確率の取得）
-Y_pred_prob = model.predict(test)
+# confusion matrix
+# Predict the values from the validation dataset
+Y_pred = model.predict(X_val)
+# Convert predictions classes to one hot vectors 
+Y_pred_classes = np.argmax(Y_pred,axis = 1) 
+# Convert validation observations to one hot vectors
+Y_true = np.argmax(Y_val,axis = 1) 
+# compute the confusion matrix
+confusion_mtx = confusion_matrix(Y_true, Y_pred_classes) 
+# plot the confusion matrix
+f,ax = plt.subplots(figsize=(8, 8))
+sns.heatmap(confusion_mtx, annot=True, linewidths=0.01,cmap="Greens",linecolor="gray", fmt= '.1f',ax=ax)
+plt.xlabel("Predicted Label")
+plt.ylabel("True Label")
+plt.title("Confusion Matrix")
+save_path = os.path.join(output_path, "Confusion_Matrix")
+plt.savefig(save_path)
 
-# 最も確率が高いクラスを取得（ラベルに変換）
-Y_pred = np.argmax(Y_pred_prob, axis=1)
 
-# 結果を DataFrame に変換
-output = pd.DataFrame({"ImageId": np.arange(1, len(Y_pred) + 1), "Label": Y_pred})
 
-# CSVファイルとして保存
-output.to_csv("submission.csv", index=False)
+# Precision, Recall, F1-score 計算
+report = classification_report(Y_true, Y_pred_classes, output_dict=True)
+precision = [report[str(i)]['precision'] for i in range(len(report) - 3)]
+recall = [report[str(i)]['recall'] for i in range(len(report) - 3)]
+f1_score = [report[str(i)]['f1-score'] for i in range(len(report) - 3)]
+labels = list(range(len(precision)))
+
+# Precision, Recall, F1-score の可視化
+plt.figure(figsize=(10, 5))
+plt.bar(labels, precision, color='blue', alpha=0.6, label="Precision")
+plt.bar(labels, recall, color='red', alpha=0.6, label="Recall", bottom=precision)
+plt.bar(labels, f1_score, color='green', alpha=0.6, label="F1 Score", bottom=np.array(precision) + np.array(recall))
+plt.xlabel("Class Labels")
+plt.ylabel("Score")
+plt.title("Precision, Recall, and F1-Score")
+plt.xticks(labels)
+plt.legend()
+
+# 画像保存
+save_path = os.path.join(output_path, "Precision_Recall_F1.png")
+plt.savefig(save_path)
+plt.close()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# # テストデータに対して予測（クラス確率の取得）
+# Y_pred_prob = model.predict(test)
+
+# # 最も確率が高いクラスを取得（ラベルに変換）
+# Y_pred = np.argmax(Y_pred_prob, axis=1)
+
+# # 結果を DataFrame に変換
+# output = pd.DataFrame({"ImageId": np.arange(1, len(Y_pred) + 1), "Label": Y_pred})
+
+# # CSVファイルとして保存
+# output.to_csv("submission.csv", index=False)
 
