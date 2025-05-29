@@ -1,12 +1,12 @@
 from __future__ import print_function
 import tensorflow as tf
-from keras.datasets import cifar10
-from keras.utils import to_categorical
-from keras.preprocessing.image import ImageDataGenerator
-from keras.models import Sequential
-from keras.layers import Input, Dense, Dropout, Activation, Flatten
-from keras.layers import Conv2D, MaxPooling2D
-from keras.optimizers import RMSprop
+from keras.datasets import cifar10 # type: ignore
+from keras.utils import to_categorical # type: ignore # type: ignore
+from keras.preprocessing.image import ImageDataGenerator # type: ignore
+from keras.models import Sequential # type: ignore # type: ignore
+from keras.layers import Input, Dense, Dropout, Activation, Flatten # type: ignore
+from keras.layers import Conv2D, MaxPooling2D # type: ignore
+from keras.optimizers import RMSprop # type: ignore
 import os
 
 import numpy as np

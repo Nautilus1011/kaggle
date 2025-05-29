@@ -7,12 +7,12 @@ from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import train_test_split
 import itertools
 
-from keras.utils.np_utils import to_categorical
-from keras.models import Sequential
-from keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPool2D
-from keras.optimizers import RMSprop, Adam
-from keras.preprocessing.image import ImageDataGenerator
-from keras.callbacks import ReduceLROnPlateau
+from keras.utils.np_utils import to_categorical # type: ignore
+from keras.models import Sequential # type: ignore
+from keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPool2D # type: ignore
+from keras.optimizers import RMSprop, Adam # type: ignore # type: ignore
+from keras.preprocessing.image import ImageDataGenerator # type: ignore
+from keras.callbacks import ReduceLROnPlateau # type: ignore
 
 import os
 
