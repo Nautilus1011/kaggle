@@ -1,20 +1,29 @@
 import numpy as np
 import pandas as pd
 import seaborn as sns
+import matplotlib 
 import matplotlib.pyplot as plt
+matplotlib.use('Agg')  # GUIを使わないバックエンド
 
 from sklearn.metrics import confusion_matrix, classification_report
 from sklearn.model_selection import train_test_split
 import itertools
 
-from keras.utils.np_utils import to_categorical
+import tensorflow as tf
+from keras.utils import to_categorical
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPool2D
 from keras.optimizers import RMSprop, Adam
-from keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from keras.callbacks import ReduceLROnPlateau
 
 import os
+
+
+
+
+
+
 
 data_path = "/home/jinysd/workspace/datasetFolder/digit"
 output_path = "/home/jinysd/workspace/repo/kaggle/digitRecognizer/keras/output"
@@ -88,7 +97,7 @@ model.add(Dense(10, activation="softmax"))
 
 
 # Defin the optimizer
-optimizer = Adam(lr=0.001, beta_1=0.9, beta_2=0.999)    # 謎
+optimizer = Adam(learning_rate=0.001, beta_1=0.9, beta_2=0.999)    # 謎
 # オプティマイザの定義
 # Adam:SGD(確率的勾配降下法)を改良したアルゴリズム
 # 学習率を適応的に調整するのが特徴
@@ -120,9 +129,10 @@ datagen = ImageDataGenerator(
 
 datagen.fit(X_train)
 
-# Fit the model
-history = model.fit_generator(datagen.flow(X_train,Y_train, batch_size=batch_size),
-                              epochs = epochs, validation_data = (X_val,Y_val), steps_per_epoch=X_train.shape[0] // batch_size)
+# fit the model
+history = model.fit(datagen.flow(X_train, Y_train, batch_size=batch_size),
+                    epochs=epochs, validation_data=(X_val, Y_val))
+
 
 
 
@@ -160,17 +170,14 @@ plt.savefig(save_path)
 # Precision, Recall, F1-score 計算
 report = classification_report(Y_true, Y_pred_classes, output_dict=True)
 
-# クラスごとの評価値を取得
-for i in range(len(report) - 3):  # 'accuracy', 'macro avg', 'weighted avg' を除外
-    precision = report[str(i)]['precision']
-    recall = report[str(i)]['recall']
-    f1_score = report[str(i)]['f1-score']
-    
-    print(f"Class {i}: Precision={precision:.4f}, Recall={recall:.4f}, F1-Score={f1_score:.4f}")
+# 'accuracy', 'macro avg', 'weighted avg' を除外してクラスごとの評価を取得
+for class_label in report.keys():
+    if class_label.isdigit():  # クラスラベルが数字の場合のみ処理
+        precision = report[class_label]['precision']
+        recall = report[class_label]['recall']
+        f1_score = report[class_label]['f1-score']
 
-
-
-
+        print(f"Class {class_label}: Precision={precision:.4f}, Recall={recall:.4f}, F1-Score={f1_score:.4f}")
 
 
 

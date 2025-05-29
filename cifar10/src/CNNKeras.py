@@ -1,12 +1,13 @@
 from __future__ import print_function
-import tensorflow as tf
-from keras.datasets import cifar10
-from keras.utils import to_categorical
-from keras.preprocessing.image import ImageDataGenerator
-from keras.models import Sequential
-from keras.layers import Input, Dense, Dropout, Activation, Flatten
-from keras.layers import Conv2D, MaxPooling2D
-from keras.optimizers import RMSprop
+
+import tensorflow
+from tensorflow.keras.datasets import cifar10
+from tensorflow.keras.utils import to_categorical
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Input, Dense, Dropout, Activation, Flatten
+from tensorflow.keras.layers import Conv2D, MaxPooling2D
+from tensorflow.keras.optimizers import RMSprop
 import os
 
 import numpy as np
@@ -17,7 +18,6 @@ import matplotlib.pyplot as plt
 
 from sklearn.metrics import confusion_matrix, classification_report
 import itertools
-
 #%matplotlib inline
 
 
