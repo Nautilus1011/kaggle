@@ -24,11 +24,8 @@ import itertools
 # model's hyperparameters
 batch_size = 32
 num_classes = 10
-<<<<<<< HEAD
-epochs = 5
-=======
+
 epochs = 50
->>>>>>> fbee59751859af535bcbfe2099195d18c73a2bf1
 data_augmentation = False
 
 output_path = "/home/jinysd/workspace/repo/kaggle/cifar10/output"
@@ -244,27 +241,6 @@ else:
 
 
 
-<<<<<<< HEAD
-
-
-plt.figure()
-plt.plot(history.history["accuracy"])
-plt.plot(history.history["val_accuracy"])
-plt.title("Model Accuracy")
-plt.xlabel("Epoch")
-plt.ylabel("Accuracy")
-plt.legend(["train", "validate"], loc="upper left")
-save_path = os.path.join(output_path, "Model_Accuracy")
-plt.savefig(save_path)
-
-plt.figure()
-plt.plot(history.history["loss"])
-plt.plot(history.history["val_loss"])
-plt.title("Model Loss")
-plt.xlabel("Epoch")
-plt.ylabel("Loss")
-plt.legend(["train", "validate"], loc="upper left")
-=======
 plt.figure()
 plt.plot(history.history["accuracy"])
 plt.plot(history.history["val_accuracy"])
@@ -282,15 +258,12 @@ plt.plot(history.history["val_accuracy"])
 plt.xlabel("Epoch")
 plt.ylabel("Loss")
 plt.title("Model Loss")
->>>>>>> fbee59751859af535bcbfe2099195d18c73a2bf1
 save_path = os.path.join(output_path, "Model_Loss")
 plt.savefig(save_path)
 
 
-<<<<<<< HEAD
-=======
 
->>>>>>> fbee59751859af535bcbfe2099195d18c73a2bf1
+
 # def plotmodelhistory(history): 
 #     fig, axs = plt.subplots(1,2,figsize=(15,5)) 
 #     # summarize history for accuracy
