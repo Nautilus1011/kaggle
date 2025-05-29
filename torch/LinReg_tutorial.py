@@ -53,3 +53,18 @@ plt.plot(range(iteration_number), loss_list)
 plt.xlabel("Number of Iterations")
 plt.ylabel("Loss")
 plt.show()
+
+
+# predict our car price 
+predicted = model(car_price_tensor).data.numpy()
+plt.scatter(car_prices_array,number_of_car_sell_array,label = "original data",color ="red")
+plt.scatter(car_prices_array,predicted,label = "predicted data",color ="blue")
+
+# predict if car price is 10$, what will be the number of car sell
+#predicted_10 = model(torch.from_numpy(np.array([10]))).data.numpy()
+#plt.scatter(10,predicted_10.data,label = "car price 10$",color ="green")
+plt.legend()
+plt.xlabel("Car Price $")
+plt.ylabel("Number of Car Sell")
+plt.title("Original vs Predicted values")
+plt.show()
