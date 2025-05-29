@@ -24,6 +24,7 @@ import itertools
 # model's hyperparameters
 batch_size = 32
 num_classes = 10
+
 epochs = 50
 data_augmentation = False
 
@@ -96,35 +97,78 @@ print(y_train.shape)
 
 
 
-
-# モデルを定義
+""" モデル定義 """
 model = Sequential()
 # 入力 => 畳み込み => relu関数 => 畳み込み => relu関数 => プーリング => ドロップアウト
+
+# 入力
 model.add(Input(shape=(32,32,3)))
+# 入力する画像の形を指定, 32x32のデータ3チャンネル(RGB)
+
+# 畳み込み層
 model.add(Conv2D(filters=32, kernel_size=(3,3), padding="same", activation="relu"))
 model.add(Conv2D(filters=32, kernel_size=(3,3), activation="relu"))
+# 畳み込みフィルタ(カーネル)を入力画像に適用して画像の特徴を抽出
+# filters=32 => 32個のフィルターを適用
+# kernel_size=(3,3) => 各カーネルのサイズは3x3ピクセル
+# 1回目の畳み込みで単純な特徴を捉え、2回目の畳み込みでヨロ高度な特徴を捉える
+# 2つの畳み込み層を重ねることで表現力を高める
+
+# プーリング層
 model.add(MaxPooling2D(pool_size=(2,2)))
+# 特徴マップを圧縮して計算コストを下げる
+# pool_size(2,2) => 2x2の領域ごとに最大値を取る
+
+# ドロップアウト
 model.add(Dropout(0.25))
+# ニューロンの25%を無作為に無効か
+# 過学習を防ぐため
 
 # 畳み込み => relu関数 => 畳み込み => プーリング => ドロップアウト
+
+# 畳み込み層
 model.add(Conv2D(filters=64, kernel_size=(3,3), padding="same", activation="relu"))
 model.add(Conv2D(filters=64, kernel_size=(3,3), activation="relu"))
+# さらに畳み込みを重ねる
+# 今度はfilters=64としてより高度な特徴を学習
+
+# プーリング層, ドロップアウト
 model.add(MaxPooling2D(pool_size=(2,2)))
 model.add(Dropout(0.25))
+# 再びプーリング層を掛けて特徴マップのサイズをさらに小さくして計算コストを抑える
+
 
 # 平坦化 => 全結合 => relu関数 => ドロップアウト
+
+# 平坦化
 model.add(Flatten())
+# 畳み込み層の出力(2D特徴マップ)を1Dベクトルに変換する
+# 全結合層(Dense層)に入力できる形に変換
+
+# 全結合層
 model.add(Dense(512, activation="relu"))
+# 512個のニューロンを持つ全結合層
+# 平坦化した特徴マップと全結合させて学習
+# 活性化関数はrelu関数
+
 model.add(Dropout(0.5))
 
-# ソフトマックス関数
+# 出力層
 model.add(Dense(num_classes, activation="softmax"))
+# 出力層のニューロン数10個と前の全結合層のニューロン512個が全結合
+# ソフトマックス関数を適用して確率分布を出力
+# 確立が一番高いところに分類されるって感じかな
+
 
 model.summary()
 
 
 # オプティマイザー
 opt = RMSprop(learning_rate=0.0001)
+# RMSprop => Adamと並んでよく使われるオプティマイザー
+# 学習率を0.0001として安定した学習を目指す
+
+
 model.compile(loss="categorical_crossentropy", 
               optimizer=opt, 
               metrics=["accuracy"])
@@ -216,6 +260,7 @@ plt.ylabel("Loss")
 plt.title("Model Loss")
 save_path = os.path.join(output_path, "Model_Loss")
 plt.savefig(save_path)
+
 
 
 
