@@ -1,12 +1,13 @@
 from __future__ import print_function
-import tensorflow as tf
-from keras.datasets import cifar10 # type: ignore
-from keras.utils import to_categorical # type: ignore # type: ignore
-from keras.preprocessing.image import ImageDataGenerator # type: ignore
-from keras.models import Sequential # type: ignore # type: ignore
-from keras.layers import Input, Dense, Dropout, Activation, Flatten # type: ignore
-from keras.layers import Conv2D, MaxPooling2D # type: ignore
-from keras.optimizers import RMSprop # type: ignore
+
+import tensorflow
+from tensorflow.keras.datasets import cifar10
+from tensorflow.keras.utils import to_categorical
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Input, Dense, Dropout, Activation, Flatten
+from tensorflow.keras.layers import Conv2D, MaxPooling2D
+from tensorflow.keras.optimizers import RMSprop
 import os
 
 import numpy as np
@@ -17,14 +18,17 @@ import matplotlib.pyplot as plt
 
 from sklearn.metrics import confusion_matrix, classification_report
 import itertools
-
 #%matplotlib inline
 
 
 # model's hyperparameters
 batch_size = 32
 num_classes = 10
+<<<<<<< HEAD
 epochs = 5
+=======
+epochs = 50
+>>>>>>> fbee59751859af535bcbfe2099195d18c73a2bf1
 data_augmentation = False
 
 output_path = "/home/jinysd/workspace/repo/kaggle/cifar10/output"
@@ -240,6 +244,7 @@ else:
 
 
 
+<<<<<<< HEAD
 
 
 plt.figure()
@@ -259,10 +264,33 @@ plt.title("Model Loss")
 plt.xlabel("Epoch")
 plt.ylabel("Loss")
 plt.legend(["train", "validate"], loc="upper left")
+=======
+plt.figure()
+plt.plot(history.history["accuracy"])
+plt.plot(history.history["val_accuracy"])
+plt.xlabel("Epoch")
+plt.ylabel("Accuracy")
+plt.title("Model Accuracy")
+save_path = os.path.join(output_path, "Model_Accuracy")
+plt.savefig(save_path)
+
+
+
+plt.figure()
+plt.plot(history.history["accuracy"])
+plt.plot(history.history["val_accuracy"])
+plt.xlabel("Epoch")
+plt.ylabel("Loss")
+plt.title("Model Loss")
+>>>>>>> fbee59751859af535bcbfe2099195d18c73a2bf1
 save_path = os.path.join(output_path, "Model_Loss")
 plt.savefig(save_path)
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> fbee59751859af535bcbfe2099195d18c73a2bf1
 # def plotmodelhistory(history): 
 #     fig, axs = plt.subplots(1,2,figsize=(15,5)) 
 #     # summarize history for accuracy
@@ -316,7 +344,7 @@ sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=labels, yticklabe
 plt.xlabel('Predicted Label')
 plt.ylabel('True Label')
 plt.title('Confusion Matrix')
-save_path = os.path.join(output_path, "Confusion_Matrix04")
+save_path = os.path.join(output_path, "Confusion_Matrix")
 plt.savefig(save_path)
 
 
