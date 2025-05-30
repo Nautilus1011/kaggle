@@ -130,7 +130,7 @@ for epoch in range(num_epochs):
     loss_train.backward()
     
     # パラメータ更新: 勾配と学習率を使ってモデルの重みを更新
-    optimizer.step()
+    optimizer.step() 
     
     # 訓練損失を履歴に追加
     train_loss_history.append(loss_train.item())
