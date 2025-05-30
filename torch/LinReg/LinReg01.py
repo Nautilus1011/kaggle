@@ -1,38 +1,48 @@
+import pandas as pd 
+import numpy as np
 import torch
 import torch.nn as nn
 import matplotlib.pyplot as plt
-import numpy as np
-import warnings
-warnings.filterwarnings("ignore")
+from sklearn.model_selection import train_test_split
 
 
-# 部屋の広さ（平方メートル）のデータ
-# 例: 20平米、25平米、30平米、...
-room_sizes_array = [20.0, 25.0, 30.0, 35.0, 40.0, 45.0, 50.0, 55.0, 60.0, 65.0]
-room_sizes_np = np.array(room_sizes_array, dtype=np.float32)
-
-# 対応する家賃（万円）のデータ
-# 広さに比例して家賃も上がるが、多少のばらつきがある
-rents_array = [6.5, 7.8, 9.0, 10.5, 11.8, 13.0, 14.5, 15.8, 17.0, 18.5]
-rents_np = np.array(rents_array, dtype=np.float32)
-
-# PyTorchのテンソルに変換 (これまで通り reshape(-1, 1) で2次元にするのを忘れずに)
-# input_data: 部屋の広さ (特徴量)
-room_sizes_tensor = torch.from_numpy(room_sizes_np).reshape(-1, 1)
-
-# target_data: 家賃 (正解ラベル)
-rents_tensor = torch.from_numpy(rents_np).reshape(-1, 1)
-
-# print("部屋の広さデータ (テンソル):\n", room_sizes_tensor)
-# print("\n家賃データ (テンソル):\n", rents_tensor)
+train_file_path = '/home/jinysd/workspace/datasets/london-house-price-prediction-advanced-techniques/train.csv'
+test_file_path = '/home/jinysd/workspace/datasets/london-house-price-prediction-advanced-techniques/test.csv'
 
 
+train_df = pd.read_csv(train_file_path)
+test_df = pd.read_csv(test_file_path)
 
+target_column = "price"
+feature_column = "floorAreaSqM"
+
+df_selected = train_df[[feature_column, target_column]].copy()
+
+df_selected.dropna(subset=[feature_column, target_column], inplace=True)
+
+
+# Numpy配列に変換
+# reshape(-1, 1)でPyTrochが期待する2次元形式[データ数, 特徴量数]に変換
+X_np = df_selected[feature_column].values.astype(np.float32).reshape(-1, 1)
+y_np = df_selected[target_column].values.astype(np.float32).reshape(-1, 1)
+
+X_train, X_val, y_train, y_val = train_test_split(
+    X_np, y_np, test_size=0.2, random_state=42
+)
+
+X_train = torch.from_numpy(X_train)
+y_train = torch.from_numpy(y_train)
+X_val = torch.from_numpy(X_val)
+y_val = torch.from_numpy(y_val)
+
+
+
+# モデル定義
 class LinearRegression(nn.Module):
     def __init__(self, input_size, output_size):
         super().__init__()
         self.linear = nn.Linear(input_size, output_size)
-
+    
     def forward(self, x):
         return self.linear(x)
     
@@ -40,40 +50,51 @@ input_dim = 1
 output_dim = 1
 model = LinearRegression(input_dim, output_dim)
 
+
+# 損失関数
 mse = nn.MSELoss()
 
+# 最適化アルゴリズム
 learning_rate = 0.00001
-optimizer = torch.optim.SGD(model.parameters(), lr = learning_rate)
+optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
 
-loss_list = []
-iteration_number = 1001
-for iteration in range(iteration_number):
+
+# モデル学習
+train_loss_history = []
+val_loss_history = []
+num_epochs = 50000
+
+for epoch in range(num_epochs):
     
+    model.train()
     optimizer.zero_grad()
-    results = model(room_sizes_tensor)
-    loss = mse(results, rents_tensor)
-    loss.backward()
+    outputs_train = model(X_train)
+    loss_train = mse(outputs_train, y_train)
+    loss_train.backward()
     optimizer.step()
-    loss_list.append(loss.item())
+    train_loss_history.append(loss_train.item())
 
-    if(iteration % 50 == 0):
-        print("epoch {}, loss {}".format(iteration, loss.item()))
+    model.eval()
+    with torch.no_grad():
+        outputs_val = model(X_val)
+        loss_val = mse(outputs_val, y_val)
 
-plt.plot(range(iteration_number), loss_list)
-plt.xlabel("Number of Iteration")
-plt.ylabel("Loss")
-plt.show()
+        val_loss_history.append(loss_val.item())
+    
+    if (epoch + 1) % 5000 == 0:
+        print(f"Epoch [{epoch+1}/{num_epochs}], "
+              f"Train Loss: {loss_train.item():.4f},"
+              f"Validation Loss: {loss_val.item():.4f}")
+        
 
-# predict our car price 
-predicted = model(room_sizes_tensor).data.numpy()
-plt.scatter(room_sizes_array,rents_array,label = "original data",color ="red")
-plt.scatter(room_sizes_array,predicted,label = "predicted data",color ="blue")
-
-# predict if car price is 10$, what will be the number of car sell
-#predicted_10 = model(torch.from_numpy(np.array([10]))).data.numpy()
-#plt.scatter(10,predicted_10.data,label = "car price 10$",color ="green")
+# 損失の推移をプロット
+plt.figure(figsize=(12, 6))
+plt.plot(train_loss_history, label="Train Loss", color='blue', alpha=0.8)
+plt.plot(val_loss_history, label="Validation Loss", color='red', alpha=0.8)
+plt.xlabel("Epoch")
+plt.ylabel("Loss (MSE)")
+plt.title("Training and Validation Loss Over Epochs")
 plt.legend()
-plt.xlabel("Car Price $")
-plt.ylabel("Number of Car Sell")
-plt.title("Original vs Predicted values")
+plt.grid(True)
+plt.yscale('log') # 損失が急激に変化する場合、対数スケールで見ると分かりやすい
 plt.show()
